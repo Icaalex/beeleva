@@ -1,0 +1,14 @@
+User Input (email/form/chat)
+        ↓
+[Qwen Cloud API - qwen3.7-plus]
+        ↓
+[Orchestrator Agent]
+    ├── Tool: Email parser
+    ├── Tool: CRM/DB lookup  
+    ├── Tool: Quote generator
+    └── Tool: Schedule follow-up
+        ↓
+[Memory Layer] ←→ Vector DB / JSON store
+(remembers client history, preferences, past decisions)
+        ↓
+[Output: Response + Action taken]

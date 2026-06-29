@@ -1,0 +1,8 @@
+Days  Milestone
+1–2 Qwen Cloud setup, 
+3-4 Core agent loop: input → parse → route → respond
+5-6 Memory layer: store + retrieve across sessions
+7-8 Tool integrations (email parser, quote builder)
+9   Frontend dashboard + Alibaba Cloud deployment
+10  Demo video + architecture diagram
+11  Buffer / polish / submit
