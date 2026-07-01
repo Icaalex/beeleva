@@ -1,0 +1,11 @@
+beeleva/
+├── main.py              # FastAPI app entry point
+├── agent.py             # Core Qwen agent logic
+├── memory.py            # SQLite memory layer
+├── tools.py             # Agent tools (quote, log, schedule)
+├── models.py            # Data models (Pydantic)
+├── database.py          # DB setup and queries
+├── .env                 # API keys (never commit this)
+├── requirements.txt     # Dependencies
+├── README.md            # Already exists
+└── frontend/            # React dashboard (later)
