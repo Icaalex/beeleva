@@ -1,7 +1,0 @@
-Tech Stack on Qwen Cloud
-LLM - qwen3.7-plus (balance of speed + quality)
-Agent framework - Python + function calling via Qwen Cloud APIv
-Memory - SQLite or JSON file (simple, deployable)
-Backend - FastAPI
-Frontend - Simple React dashboard
-Deployment - Alibaba Cloud ECS or Function Compute

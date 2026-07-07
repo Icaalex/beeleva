@@ -1,0 +1,13 @@
+Tech Stack on Qwen Cloud
+LLM - qwen3.7-plus (balance of speed + quality)
+Agent framework - Python + function calling via Qwen Cloud APIv
+Memory - SQLite or JSON file (simple, deployable)
+Backend - FastAPI
+Frontend - Simple React dashboard
+Deployment - Alibaba Cloud ECS or Function Compute
+
+Track 4: Autopilot Agent
+Build an Agent that automates real-world business workflows end-to-end. Scenarios are open-ended — for example, from customer inquiry emails to quote generation, from system alerts to automated remediation, or from resume screening to interview scheduling. Participants should demonstrate the Agent's ability to handle ambiguous inputs, invoke external tools, and incorporate human-in-the-loop checkpoints at critical decision points. Emphasis is on production-readiness over toy demos.
+
+Track 1: MemoryAgent
+Build an Agent with persistent memory that autonomously accumulates experience, remembers user preferences, and makes increasingly accurate decisions across multi-turn, cross-session interactions. Participants should focus on:efficient memory storage and retrieval, timely forgetting of outdated information, and recalling critical memories within limited context windows.
