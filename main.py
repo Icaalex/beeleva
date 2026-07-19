@@ -29,10 +29,20 @@ app.add_middleware(
 )
 
 # This runs once when the server starts — sets up the database
-@app.on_event("startup")
-async def startup():
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     init_db()
     print("Beeleva is online.")
+    yield
+
+app = FastAPI(
+    title="Beeleva 0.1",
+    description="AI-powered business operator for small businesses",
+    version="0.1.0",
+    lifespan=lifespan
+)
 
 # ROUTE 1: Health check
 # A simple endpoint to confirm the server is running
