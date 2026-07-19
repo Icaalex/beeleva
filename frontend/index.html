@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beeleva 0.1 — AI Business Operator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.0/axios.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span {
+      font-size: 12px;
+      font-weight: 400;
+      background: none;
+      -webkit-text-fill-color: #64748b;
+      margin-left: 8px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: #22c55e;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* MAIN LAYOUT */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #f1f5f9;
+    }
+
+    .page-subtitle {
+      color: #64748b;
+      font-size: 14px;
+      margin-bottom: 36px;
+    }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(167,139,250,0.3);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* TWO COLUMN LAYOUT */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    /* CARDS */
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 28px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #a78bfa22, #60a5fa22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 7px;
+    }
+
+    input, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #e2e8f0;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #a78bfa;
+      background: rgba(167,139,250,0.05);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #a78bfa, #60a5fa);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .submit-btn:hover { opacity: 0.9; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* RESPONSE BOX */
+    .response-box {
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(34,197,94,0.07);
+      border: 1px solid rgba(34,197,94,0.15);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #86efac;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .response-box.visible { display: block; }
+
+    .returning-badge {
+      display: inline-block;
+      background: rgba(167,139,250,0.15);
+      border: 1px solid rgba(167,139,250,0.3);
+      color: #a78bfa;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    /* INQUIRY FEED */
+    .inquiry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .inquiry-list::-webkit-scrollbar { width: 4px; }
+    .inquiry-list::-webkit-scrollbar-track { background: transparent; }
+    .inquiry-list::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+    }
+
+    .inquiry-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .inquiry-item:hover {
+      border-color: rgba(167,139,250,0.2);
+    }
+
+    .inquiry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .inquiry-email {
+      font-size: 13px;
+      font-weight: 600;
+      color: #a78bfa;
+    }
+
+    .inquiry-time {
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .inquiry-message {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .inquiry-response {
+      font-size: 12px;
+      color: #64748b;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid #a78bfa;
+      padding: 8px 12px;
+      border-radius: 0 6px 6px 0;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .inquiry-item.expanded .inquiry-response {
+      display: block;
+    }
+
+    .toggle-btn {
+      font-size: 11px;
+      color: #60a5fa;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      margin-top: 6px;
+    }
+
+    .toggle-btn:hover { text-decoration: underline; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .empty-state .big { font-size: 32px; margin-bottom: 8px; }
+
+    /* LOADING */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 13px;
+      color: #e2e8f0;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success { border-color: rgba(34,197,94,0.3); color: #86efac; }
+    .toast.error { border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Beeleva <span>0.1 — AI Business Operator</span></div>
+  <div class="status-pill">
+    <div class="status-dot"></div>
+    System Online
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-title">Operations Dashboard</div>
+  <div class="page-subtitle">All customer inquiries handled automatically by Beeleva</div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Inquiries</div>
+      <div class="stat-value" id="totalInquiries">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Customers in Memory</div>
+      <div class="stat-value" id="totalCustomers">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Response Rate</div>
+      <div class="stat-value">100%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Response Time</div>
+      <div class="stat-value">&lt;3s</div>
+    </div>
+  </div>
+
+  <!-- TWO COLUMN -->
+  <div class="two-col">
+
+    <!-- INQUIRY FORM -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">✉️</div>
+        Submit Customer Inquiry
+      </div>
+
+      <div class="form-group">
+        <label>Customer Name</label>
+        <input type="text" id="name" placeholder="e.g. Ada Okonkwo" />
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="ada@example.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="message" placeholder="Hi, I need a quote for..."></textarea>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" onclick="submitInquiry()">
+        Send to Beeleva
+      </button>
+
+      <div class="response-box" id="responseBox">
+        <div id="returningBadge" class="returning-badge" style="display:none">
+          🧠 Returning Customer — Memory Active
+        </div>
+        <div id="responseText"></div>
+      </div>
+    </div>
+
+    <!-- INQUIRY FEED -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon">📋</div>
+        Live Inquiry Feed
+        <button onclick="loadInquiries()"
+          style="margin-left:auto; background:rgba(255,255,255,0.05);
+          border:1px solid rgba(255,255,255,0.1); color:#94a3b8;
+          padding:5px 12px; border-radius:8px; cursor:pointer; font-size:12px;">
+          Refresh
+        </button>
+      </div>
+
+      <div class="inquiry-list" id="inquiryList">
+        <div class="empty-state">
+          <div class="big">📭</div>
+          No inquiries yet. Submit one to get started.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="index.js">
+</script>
+</body>
+</html>
