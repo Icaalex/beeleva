@@ -1,4 +1,4 @@
-  const API = 'https://beeleva-production.up.railway.app/';
+  const API = 'https://beeleva-production.up.railway.app';
 
   // Show toast notification
   function showToast(message, type = 'success') {
