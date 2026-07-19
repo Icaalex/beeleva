@@ -7,8 +7,17 @@ from memory import get_customer_memory, get_or_create_customer
 from database import init_db
 import os
 from dotenv import load_dotenv
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 load_dotenv()
+
+
+app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+@app.get("/dashboard")
+async def dashboard():
+    return FileResponse("frontend/index.html")
 
 # FastAPI creates our web server
 # Think of it as the front door of Beeleva —
